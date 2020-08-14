@@ -11,16 +11,13 @@
     "jsx": "react-native",
     "lib": ["es2017"],
     "allowSyntheticDefaultImports": true,
+    "allowJs": true,
     "moduleResolution": "node",
     "noEmitHelpers": true,
     "importHelpers": true,
     "strict": true,
     "noImplicitReturns": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
