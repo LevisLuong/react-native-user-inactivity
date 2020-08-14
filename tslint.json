@@ -5,13 +5,14 @@
     "no-console": false,
     "interface-name": false,
     "member-ordering": false,
-    "quotemark": [true, "single"]
+    "quotemark": [false, "single"]
   },
   "linterOptions": {
     "exclude": [
       "config/**/*.js",
       "node_modules/**/*.ts",
-      "coverage/lcov-report/*.js"
+      "coverage/lcov-report/*.js",
+      "src/*.tsx"
     ]
   }
 }

@@ -1,20 +1,16 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import {
   Keyboard,
   PanResponder,
   StyleProp,
   View,
   ViewStyle,
-} from 'react-native';
+} from "react-native";
 import {
   defaultTimeoutHandler,
   TimeoutHandler,
   useTimeout,
-} from 'usetimeout-react-hook';
+} from "usetimeout-react-hook";
 
 const defaultTimeForInactivity = 10000;
 const defaultStyle: ViewStyle = {
@@ -112,11 +108,16 @@ const UserInactivity: React.FC<UserInactivityProps> = ({
   /**
    * The timeout is reset when either `date` or `timeout` change.
    */
-  const cancelTimer = useTimeout(() => {
-    setActive(false);
-    onAction(false);
-    // @ts-ignore
-  }, timeout, actualTimeoutHandler, [date, timeout]);
+  const cancelTimer = useTimeout(
+    () => {
+      setActive(false);
+      onAction(false);
+      // @ts-ignore
+    },
+    timeout,
+    actualTimeoutHandler,
+    [date, timeout]
+  );
 
   const isFirstRender = useRef(true);
 
@@ -153,38 +154,38 @@ const UserInactivity: React.FC<UserInactivityProps> = ({
     };
   }, []);
 
-  function throttle(func, wait, options) {
-        var context, args, result;
-        var timeout = null;
-        var previous = 0;
-        if (!options) options = {};
-        var later = function() {
-          previous = options.leading === false ? 0 : Date.now();
+  function throttle(func, wait, options = {}) {
+    var context, args, result;
+    var timeout = null;
+    var previous = 0;
+    if (!options) options = {};
+    var later = function () {
+      previous = options.leading === false ? 0 : Date.now();
+      timeout = null;
+      result = func.apply(context, args);
+      if (!timeout) context = args = null;
+    };
+    return function () {
+      var now = Date.now();
+      if (!previous && options.leading === false) previous = now;
+      var remaining = wait - (now - previous);
+      context = this;
+      args = arguments;
+      if (remaining <= 0 || remaining > wait) {
+        if (timeout) {
+          clearTimeout(timeout);
           timeout = null;
-          result = func.apply(context, args);
-          if (!timeout) context = args = null;
-        };
-        return function() {
-          var now = Date.now();
-          if (!previous && options.leading === false) previous = now;
-          var remaining = wait - (now - previous);
-          context = this;
-          args = arguments;
-          if (remaining <= 0 || remaining > wait) {
-            if (timeout) {
-              clearTimeout(timeout);
-              timeout = null;
-            }
-            previous = now;
-            result = func.apply(context, args);
-            if (!timeout) context = args = null;
-          } else if (!timeout && options.trailing !== false) {
-            timeout = setTimeout(later, remaining);
-          }
-          return result;
-        };
-      };
-  
+        }
+        previous = now;
+        result = func.apply(context, args);
+        if (!timeout) context = args = null;
+      } else if (!timeout && options.trailing !== false) {
+        timeout = setTimeout(later, remaining);
+      }
+      return result;
+    };
+  }
+
   /**
    * This method is called whenever a touch is detected. If no touch is
    * detected after `this.props.timeForInactivity` milliseconds, then
@@ -213,18 +214,25 @@ const UserInactivity: React.FC<UserInactivityProps> = ({
   /**
    * The PanResponder instance is initialized only once.
    */
-  const [panResponder, _] = useState(PanResponder.create({
-        onMoveShouldSetPanResponderCapture: throttle(resetTimerForPanResponder,1000),
-        onPanResponderTerminationRequest: throttle(resetTimerForPanResponder,1000),
-        onStartShouldSetPanResponderCapture: throttle(resetTimerForPanResponder,1000),
-    }));
+  const [panResponder, _] = useState(
+    PanResponder.create({
+      onMoveShouldSetPanResponderCapture: throttle(
+        resetTimerForPanResponder,
+        1000
+      ),
+      onPanResponderTerminationRequest: throttle(
+        resetTimerForPanResponder,
+        1000
+      ),
+      onStartShouldSetPanResponderCapture: throttle(
+        resetTimerForPanResponder,
+        1000
+      ),
+    })
+  );
 
   return (
-    <View
-      style={actualStyle}
-      collapsable={false}
-      {...panResponder.panHandlers}
-    >
+    <View style={actualStyle} collapsable={false} {...panResponder.panHandlers}>
       {children}
     </View>
   );
