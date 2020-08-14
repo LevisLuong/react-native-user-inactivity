@@ -115,7 +115,7 @@ const UserInactivity: React.FC<UserInactivityProps> = ({
       // @ts-ignore
     },
     timeout,
-    actualTimeoutHandler,
+    actualTimeoutHandler as any,
     [date, timeout]
   );
 
@@ -141,22 +141,22 @@ const UserInactivity: React.FC<UserInactivityProps> = ({
    */
   useEffect(() => {
     if (!skipKeyboard) {
-      Keyboard.addListener('keyboardDidHide', resetTimerDueToActivity);
-      Keyboard.addListener('keyboardDidShow', resetTimerDueToActivity);
+      Keyboard.addListener("keyboardDidHide", resetTimerDueToActivity);
+      Keyboard.addListener("keyboardDidShow", resetTimerDueToActivity);
     }
 
     // release event listeners on destruction
     return () => {
       if (!skipKeyboard) {
-        Keyboard.removeAllListeners('keyboardDidHide');
-        Keyboard.removeAllListeners('keyboardDidShow');
+        Keyboard.removeAllListeners("keyboardDidHide");
+        Keyboard.removeAllListeners("keyboardDidShow");
       }
     };
   }, []);
 
-  function throttle(func, wait, options = {}) {
-    var context, args, result;
-    var timeout = null;
+  function throttle(func: Function, wait: any, options: any = {}) {
+    var context: Function | any, args: any, result: any;
+    var timeout: any = null;
     var previous = 0;
     if (!options) options = {};
     var later = function () {
@@ -169,6 +169,7 @@ const UserInactivity: React.FC<UserInactivityProps> = ({
       var now = Date.now();
       if (!previous && options.leading === false) previous = now;
       var remaining = wait - (now - previous);
+      // @ts-ignore
       context = this;
       args = arguments;
       if (remaining <= 0 || remaining > wait) {
